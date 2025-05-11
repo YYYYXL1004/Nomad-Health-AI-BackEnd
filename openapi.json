@@ -1,0 +1,2168 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "牧民健康应用API",
+    "description": "牧民健康应用的后端API接口",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API服务器"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "响应消息"
+          },
+          "data": {
+            "type": "object",
+            "description": "响应数据"
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "时间戳（毫秒）"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "account": {
+            "type": "string",
+            "description": "用户账号"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "用户昵称"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "用户头像URL"
+          },
+          "gender": {
+            "type": "string",
+            "description": "性别（male/female）"
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "description": "生日（YYYY-MM-DD）"
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号"
+          },
+          "email": {
+            "type": "string",
+            "description": "电子邮箱"
+          },
+          "address": {
+            "type": "string",
+            "description": "地址"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "创建时间"
+          }
+        }
+      },
+      "HealthReport": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "description": "报告ID"
+          },
+          "title": {
+            "type": "string",
+            "description": "报告标题"
+          },
+          "summary": {
+            "type": "string",
+            "description": "报告摘要"
+          },
+          "doctor": {
+            "type": "string",
+            "description": "医生姓名"
+          },
+          "hospital": {
+            "type": "string",
+            "description": "医院名称"
+          },
+          "suggestion": {
+            "type": "string",
+            "description": "建议"
+          },
+          "status": {
+            "type": "string",
+            "description": "健康状态（normal/warning/danger）"
+          },
+          "hasRead": {
+            "type": "boolean",
+            "description": "是否已读"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "创建时间"
+          }
+        }
+      },
+      "HealthReportItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "检查项目名称"
+          },
+          "value": {
+            "type": "string",
+            "description": "检查结果值"
+          },
+          "reference": {
+            "type": "string",
+            "description": "参考值范围"
+          },
+          "status": {
+            "type": "string",
+            "description": "状态（normal/high/low）"
+          }
+        }
+      },
+      "ConsultSession": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "会话ID"
+          },
+          "symptoms": {
+            "type": "string",
+            "description": "症状描述"
+          },
+          "duration": {
+            "type": "string",
+            "description": "症状持续时间"
+          },
+          "status": {
+            "type": "string",
+            "description": "会话状态（waiting/consulting/ended）"
+          },
+          "doctorName": {
+            "type": "string",
+            "description": "医生姓名"
+          },
+          "doctorDepartment": {
+            "type": "string",
+            "description": "医生科室"
+          },
+          "doctorTitle": {
+            "type": "string",
+            "description": "医生职称"
+          },
+          "doctorAvatar": {
+            "type": "string",
+            "description": "医生头像URL"
+          },
+          "lastActivity": {
+            "type": "string",
+            "format": "date-time",
+            "description": "最后活动时间"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "创建时间"
+          }
+        }
+      },
+      "ConsultMessage": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "description": "消息ID"
+          },
+          "content": {
+            "type": "string",
+            "description": "消息内容"
+          },
+          "contentType": {
+            "type": "string",
+            "description": "内容类型（text/image/audio）"
+          },
+          "sender": {
+            "type": "string",
+            "description": "发送者（user/doctor/ai）"
+          },
+          "hasRead": {
+            "type": "boolean",
+            "description": "是否已读"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "创建时间"
+          }
+        }
+      },
+      "Article": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "description": "文章ID"
+          },
+          "title": {
+            "type": "string",
+            "description": "文章标题"
+          },
+          "title_mn": {
+            "type": "string",
+            "description": "蒙文标题"
+          },
+          "summary": {
+            "type": "string",
+            "description": "文章摘要"
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "封面图片URL"
+          },
+          "author": {
+            "type": "string",
+            "description": "作者"
+          },
+          "viewCount": {
+            "type": "integer",
+            "description": "阅读量"
+          },
+          "category": {
+            "type": "string",
+            "description": "分类名称"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "标签列表"
+          },
+          "publishTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "发布时间"
+          }
+        }
+      },
+      "UserSetting": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "语言设置（zh-CN/mn-MN）"
+          },
+          "pushNotification": {
+            "type": "boolean",
+            "description": "是否开启推送通知"
+          },
+          "soundNotification": {
+            "type": "boolean",
+            "description": "是否开启声音通知"
+          },
+          "theme": {
+            "type": "string",
+            "description": "主题设置（light/dark/system）"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["用户认证"],
+        "summary": "用户登录",
+        "description": "用户使用账号密码登录系统",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["account", "password"],
+                "properties": {
+                  "account": {
+                    "type": "string",
+                    "description": "用户账号"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "用户密码"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "token": {
+                              "type": "string",
+                              "description": "JWT令牌"
+                            },
+                            "userId": {
+                              "type": "string",
+                              "description": "用户ID"
+                            },
+                            "nickname": {
+                              "type": "string",
+                              "description": "用户昵称"
+                            },
+                            "avatar": {
+                              "type": "string",
+                              "description": "用户头像URL"
+                            },
+                            "expiresIn": {
+                              "type": "integer",
+                              "description": "令牌过期时间（秒）"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          },
+          "401": {
+            "description": "账号或密码错误"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["用户认证"],
+        "summary": "用户注册",
+        "description": "新用户注册系统账号",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["account", "password", "confirmPassword"],
+                "properties": {
+                  "account": {
+                    "type": "string",
+                    "description": "用户账号"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "用户密码"
+                  },
+                  "confirmPassword": {
+                    "type": "string",
+                    "description": "确认密码"
+                  },
+                  "nickname": {
+                    "type": "string",
+                    "description": "用户昵称"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "手机号"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "注册成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "userId": {
+                              "type": "string",
+                              "description": "用户ID"
+                            },
+                            "account": {
+                              "type": "string",
+                              "description": "用户账号"
+                            },
+                            "nickname": {
+                              "type": "string",
+                              "description": "用户昵称"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误或账号已存在"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": ["用户认证"],
+        "summary": "重置密码",
+        "description": "用户通过手机验证码重置密码",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["phone", "verifyCode", "newPassword"],
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "description": "手机号"
+                  },
+                  "verifyCode": {
+                    "type": "string",
+                    "description": "验证码"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "新密码"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "密码重置成功"
+          },
+          "400": {
+            "description": "参数错误或手机号未注册"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["用户认证"],
+        "summary": "退出登录",
+        "description": "用户退出登录",
+        "responses": {
+          "200": {
+            "description": "退出成功"
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    },
+    "/user/info": {
+      "get": {
+        "tags": ["用户信息"],
+        "summary": "获取用户信息",
+        "description": "获取当前登录用户的详细信息",
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "用户不存在"
+          }
+        }
+      },
+      "put": {
+        "tags": ["用户信息"],
+        "summary": "更新用户信息",
+        "description": "更新当前登录用户的详细信息",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "description": "用户昵称"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "description": "用户头像URL"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "性别（male/female）"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "生日（YYYY-MM-DD）"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "手机号"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "电子邮箱"
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "地址"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "用户不存在"
+          }
+        }
+      }
+    },
+    "/user/avatar": {
+      "post": {
+        "tags": ["用户信息"],
+        "summary": "上传用户头像",
+        "description": "上传并更新用户头像",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["avatar"],
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "头像图片文件"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "avatarUrl": {
+                              "type": "string",
+                              "description": "头像URL"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误或文件类型不支持"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "用户不存在"
+          }
+        }
+      }
+    },
+    "/user/password": {
+      "put": {
+        "tags": ["用户信息"],
+        "summary": "修改密码",
+        "description": "用户修改自己的登录密码",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["oldPassword", "newPassword"],
+                "properties": {
+                  "oldPassword": {
+                    "type": "string",
+                    "description": "旧密码"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "新密码"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功"
+          },
+          "400": {
+            "description": "参数错误或旧密码错误"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "用户不存在"
+          }
+        }
+      }
+    },
+    "/health/reports": {
+      "get": {
+        "tags": ["健康服务"],
+        "summary": "获取健康报告列表",
+        "description": "获取用户的健康报告列表",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer",
+                              "description": "总记录数"
+                            },
+                            "pages": {
+                              "type": "integer",
+                              "description": "总页数"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/HealthReport"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    },
+    "/health/reports/{report_id}": {
+      "get": {
+        "tags": ["健康服务"],
+        "summary": "获取健康报告详情",
+        "description": "获取指定ID的健康报告详情",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "description": "报告ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/HealthReport"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "$ref": "#/components/schemas/HealthReportItem"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "报告不存在"
+          }
+        }
+      }
+    },
+    "/health/advice": {
+      "get": {
+        "tags": ["健康服务"],
+        "summary": "获取健康建议列表",
+        "description": "获取用户的健康建议列表",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer",
+                              "description": "总记录数"
+                            },
+                            "pages": {
+                              "type": "integer",
+                              "description": "总页数"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "adviceId": {
+                                    "type": "string",
+                                    "description": "建议ID"
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "description": "标题"
+                                  },
+                                  "summary": {
+                                    "type": "string",
+                                    "description": "摘要"
+                                  },
+                                  "author": {
+                                    "type": "string",
+                                    "description": "作者"
+                                  },
+                                  "category": {
+                                    "type": "string",
+                                    "description": "分类"
+                                  },
+                                  "hasRead": {
+                                    "type": "boolean",
+                                    "description": "是否已读"
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "创建时间"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    },
+    "/health/advice/{advice_id}": {
+      "get": {
+        "tags": ["健康服务"],
+        "summary": "获取健康建议详情",
+        "description": "获取指定ID的健康建议详情",
+        "parameters": [
+          {
+            "name": "advice_id",
+            "in": "path",
+            "required": true,
+            "description": "建议ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "adviceId": {
+                              "type": "string",
+                              "description": "建议ID"
+                            },
+                            "title": {
+                              "type": "string",
+                              "description": "标题"
+                            },
+                            "summary": {
+                              "type": "string",
+                              "description": "摘要"
+                            },
+                            "content": {
+                              "type": "string",
+                              "description": "详细内容"
+                            },
+                            "author": {
+                              "type": "string",
+                              "description": "作者"
+                            },
+                            "category": {
+                              "type": "string",
+                              "description": "分类"
+                            },
+                            "hasRead": {
+                              "type": "boolean",
+                              "description": "是否已读"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "创建时间"
+                            },
+                            "relatedArticles": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "articleId": {
+                                    "type": "string",
+                                    "description": "文章ID"
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "description": "文章标题"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "建议不存在"
+          }
+        }
+      }
+    },
+    "/consult/sessions": {
+      "get": {
+        "tags": ["问诊服务"],
+        "summary": "获取问诊会话列表",
+        "description": "获取用户的问诊会话列表",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "会话状态（waiting/consulting/ended）",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer",
+                              "description": "总记录数"
+                            },
+                            "pages": {
+                              "type": "integer",
+                              "description": "总页数"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/ConsultSession"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      },
+      "post": {
+        "tags": ["问诊服务"],
+        "summary": "创建问诊会话",
+        "description": "创建新的问诊会话",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["symptoms"],
+                "properties": {
+                  "symptoms": {
+                    "type": "string",
+                    "description": "症状描述"
+                  },
+                  "duration": {
+                    "type": "string",
+                    "description": "症状持续时间"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "sessionId": {
+                              "type": "string",
+                              "description": "会话ID"
+                            },
+                            "createTime": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "创建时间"
+                            },
+                            "status": {
+                              "type": "string",
+                              "description": "会话状态"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    },
+    "/consult/sessions/{session_id}": {
+      "get": {
+        "tags": ["问诊服务"],
+        "summary": "获取问诊会话详情",
+        "description": "获取指定会话ID的问诊会话详情",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "description": "会话ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ConsultSession"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "会话不存在"
+          }
+        }
+      }
+    },
+    "/consult/sessions/{session_id}/messages": {
+      "get": {
+        "tags": ["问诊服务"],
+        "summary": "获取问诊消息记录",
+        "description": "获取指定会话的消息记录",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "description": "会话ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "查询此时间之前的消息（ISO格式时间戳）",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "返回消息数量限制",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "hasMore": {
+                              "type": "boolean",
+                              "description": "是否有更多消息"
+                            },
+                            "messages": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/ConsultMessage"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "会话不存在"
+          }
+        }
+      },
+      "post": {
+        "tags": ["问诊服务"],
+        "summary": "发送问诊消息",
+        "description": "在指定会话中发送问诊消息",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "description": "会话ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content"],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "消息内容"
+                  },
+                  "content_type": {
+                    "type": "string",
+                    "description": "内容类型（text/image/audio）",
+                    "default": "text"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "发送成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "messageId": {
+                              "type": "string",
+                              "description": "消息ID"
+                            },
+                            "content": {
+                              "type": "string",
+                              "description": "消息内容"
+                            },
+                            "contentType": {
+                              "type": "string",
+                              "description": "内容类型"
+                            },
+                            "sender": {
+                              "type": "string",
+                              "description": "发送者"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "创建时间"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "会话不存在"
+          },
+          "500": {
+            "description": "服务器错误"
+          }
+        }
+      }
+    },
+    "/consult/sessions/{session_id}/end": {
+      "post": {
+        "tags": ["问诊服务"],
+        "summary": "结束问诊会话",
+        "description": "结束指定的问诊会话",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "description": "会话ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "结束成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "sessionId": {
+                              "type": "string",
+                              "description": "会话ID"
+                            },
+                            "endTime": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "结束时间"
+                            },
+                            "status": {
+                              "type": "string",
+                              "description": "会话状态"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "会话已结束"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "404": {
+            "description": "会话不存在"
+          }
+        }
+      }
+    },
+    "/consult/upload": {
+      "post": {
+        "tags": ["问诊服务"],
+        "summary": "上传问诊相关文件",
+        "description": "上传问诊相关的图片或语音文件",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "文件内容"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "文件类型（image/audio）",
+                    "default": "image"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "url": {
+                              "type": "string",
+                              "description": "文件URL"
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "文件类型"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误或文件类型不支持"
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    },
+    "/consult/speech-to-text": {
+      "post": {
+        "tags": ["问诊服务"],
+        "summary": "语音转文字",
+        "description": "将语音文件转换为文字",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["audio"],
+                "properties": {
+                  "audio": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "语音文件"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "转换成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "string",
+                              "description": "识别出的文字"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误或文件格式不支持"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "500": {
+            "description": "服务器错误或识别失败"
+          }
+        }
+      }
+    },
+    "/consult/medical-qa": {
+      "post": {
+        "tags": ["问诊服务"],
+        "summary": "医疗问答",
+        "description": "直接调用千问医疗模型API进行问答",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["query"],
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "问题"
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "语言（chinese/mongolian）",
+                    "default": "chinese"
+                  },
+                  "max_tokens": {
+                    "type": "integer",
+                    "description": "生成的最大token数",
+                    "default": 512
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "description": "生成文本的随机性参数",
+                    "default": 0.7
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "response": {
+                              "type": "string",
+                              "description": "模型回复内容"
+                            },
+                            "time_taken": {
+                              "type": "number",
+                              "description": "处理时间（秒）"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          },
+          "401": {
+            "description": "认证失败"
+          },
+          "500": {
+            "description": "服务器错误或API调用失败"
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "tags": ["健康文章"],
+        "summary": "获取文章列表",
+        "description": "获取健康文章列表",
+        "security": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "分类名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "标签名称",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer",
+                              "description": "总记录数"
+                            },
+                            "pages": {
+                              "type": "integer",
+                              "description": "总页数"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Article"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles/{article_id}": {
+      "get": {
+        "tags": ["健康文章"],
+        "summary": "获取文章详情",
+        "description": "获取指定ID的文章详情",
+        "security": [],
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "description": "文章ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/Article"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "content": {
+                                  "type": "string",
+                                  "description": "文章内容（HTML格式）"
+                                },
+                                "content_mn": {
+                                  "type": "string",
+                                  "description": "蒙文文章内容（HTML格式）"
+                                },
+                                "relatedArticles": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "articleId": {
+                                        "type": "string",
+                                        "description": "文章ID"
+                                      },
+                                      "title": {
+                                        "type": "string",
+                                        "description": "文章标题"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "文章不存在"
+          }
+        }
+      }
+    },
+    "/articles/categories": {
+      "get": {
+        "tags": ["健康文章"],
+        "summary": "获取文章分类",
+        "description": "获取所有文章分类",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "categoryId": {
+                                "type": "string",
+                                "description": "分类ID"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "分类名称（中文）"
+                              },
+                              "name_mn": {
+                                "type": "string",
+                                "description": "分类名称（蒙文）"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles/search": {
+      "get": {
+        "tags": ["健康文章"],
+        "summary": "搜索文章",
+        "description": "根据关键词搜索文章",
+        "security": [],
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": true,
+            "description": "搜索关键词",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "搜索成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer",
+                              "description": "总记录数"
+                            },
+                            "pages": {
+                              "type": "integer",
+                              "description": "总页数"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Article"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        }
+      }
+    },
+    "/settings": {
+      "get": {
+        "tags": ["系统设置"],
+        "summary": "获取系统设置",
+        "description": "获取用户的系统设置",
+        "responses": {
+          "200": {
+            "description": "获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UserSetting"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      },
+      "put": {
+        "tags": ["系统设置"],
+        "summary": "更新系统设置",
+        "description": "更新用户的系统设置",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "language": {
+                    "type": "string",
+                    "description": "语言设置（zh-CN/mn-MN）"
+                  },
+                  "pushNotification": {
+                    "type": "boolean",
+                    "description": "是否开启推送通知"
+                  },
+                  "soundNotification": {
+                    "type": "boolean",
+                    "description": "是否开启声音通知"
+                  },
+                  "theme": {
+                    "type": "string",
+                    "description": "主题设置（light/dark/system）"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UserSetting"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    },
+    "/settings/clear-cache": {
+      "post": {
+        "tags": ["系统设置"],
+        "summary": "清除缓存",
+        "description": "清除应用缓存",
+        "responses": {
+          "200": {
+            "description": "清除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "clearedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "清除时间"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败"
+          }
+        }
+      }
+    }
+  }
+} 
