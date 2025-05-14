@@ -25,17 +25,10 @@ def create_app():
     # 启用CORS，允许所有跨域请求
     CORS(app, 
          supports_credentials=True, 
-         resources={r"/*": {"origins": "*"}},
+         resources={r"/*": {"origins": ["http://localhost:8080"]}},
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-         allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Origin"])
-    
-    # 添加一个全局的after_request处理器来确保CORS头被添加
-    @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        return response
+         allow_headers=["Content-Type", "Authorization", "Content-Disposition", "Accept",
+                       "X-Requested-With", "Access-Control-Allow-Origin"])
     
     # 确保上传目录存在
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)

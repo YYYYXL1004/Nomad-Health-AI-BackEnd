@@ -245,7 +245,8 @@ def change_password():
         logger.error(f"详细异常堆栈: {traceback.format_exc()}")
         return api_response(500, 'server_error')
 
-@user_bp.route('/avatar', methods=['POST'])
+@user_bp.route('/avatar', methods=['POST', 'OPTIONS'])
+@user_bp.route('/upload/image', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def upload_avatar():
     """
@@ -261,6 +262,10 @@ def upload_avatar():
     - 成功: 头像URL
     - 失败: 错误信息
     """
+    if request.method == 'OPTIONS':
+        # 处理OPTIONS请求，返回CORS需要的头信息
+        return '', 200
+        
     try:
         # 获取当前用户ID
         user_id = get_jwt_identity()  # 使用字符串形式的用户ID
